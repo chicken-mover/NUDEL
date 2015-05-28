@@ -8,17 +8,37 @@ Plugins are built to target [Spigot](http://spigotmc.org).
 
 ## Setting up your development environment
 
-To test plugins you will need to set up a local testing environment. Spigot
-installation instructions can be found here: http://www.spigotmc.org/wiki/spigot-installation/
-
-Once you have it up and running locally, clone this repository:
-```
+Assuming you are doing this on Linux, the following should work to get started:
+```bash
 $ git clone git@github.com:chicken-mover/NUDEL.git
+$ cd NUDEL
+$ bash scripts/bootstrap-spigot.sh
 ```
 
-## Testing and building plugins
+It will take some time for the Spigot build to complete, but once it is done
+you will have a new directory under `NUDEL/spigot` containing all of the
+built files.
 
-More to come!
+You can then start the local server with:
+```bash
+$ bash scripts/start-server.sh
+```
+
+For further information on the setup/build process, be sure to check out the
+[relevant page on the Spigot wiki](http://www.spigotmc.org/wiki/spigot-installation/)
+
+## Testing plugin builds
+
+The Spigot [blank plugin tutorial](http://www.spigotmc.org/wiki/creating-a-blank-spigot-plugin-in-eclipse/)
+explains how to create and build plugins in Eclipse. These files should go 
+under `NUDEL/plugins/<PluginName>`. `net.d3mok.uruk.<PluginName>` is the 
+preferred namespacing scheme.
+
+Builds of JARs can be output to `NUDEL/spigot/plugins/` for testing with the
+server built in the previous section.
+
+Testing your plugin builds on the live server will get your access permanently
+revoked.
 
 ## License
 
