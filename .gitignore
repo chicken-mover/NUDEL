@@ -1,0 +1,12 @@
+# Vim noise
+*.swp
+~*
+
+# Java stuff
+*.class
+*.jar
+
+# Eclipse
+.classpath
+.project
+.settings/
