@@ -2,11 +2,18 @@
 
 Lightning/thunder and storm-related tools.
 
-## Goals
+## Commands
 
-* Commands for creating lightning and lightning effects (`/strike`, `/boom`, 
-  `/cast`), optionally targeting players or coordinates (otherwise defaulting
-  to player or command block's location).
-* Localized thunder sounds (with little config file would be nice).
-* Commands for toggling storm state (`/storm [on|off]`)
-* Localized storms is probably impossible, but that would be neat.
+* `/strike [x y z|player]` - Strike the specified player, coordinates, or (if 
+  no arguments provided) the current caster's location with a bolt of 
+  lightning.
+* `/boom [x y z|player]` - Zap the specified player, coordinates, or (if 
+  no arguments provided) the current caster's location with a bolt of 
+  harmless lightning.
+* `/storm [on|off]` - Set the storm state on or off, or (if no arguments are
+  provided) toggle it.
+
+## TODO:
+
+* Localized thunder somehow
++ Localized storms if possible (although it may not be).

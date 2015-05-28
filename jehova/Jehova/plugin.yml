@@ -1,0 +1,19 @@
+name: Jehova
+main: net.d3mok.uruk.jehova.Jehova
+version: 0.1
+commands:
+    boom:
+        description: Calls down a (harmless) lightning strike at the location of a specified player or coordinates. If no arguments are provided, it will strike where the command was invoked.
+        usage: /strike [x y z|player]
+        permission: Jehova.strike
+        permission-message: Invalid command for your permission level.
+    strike:
+        description: Calls down an actual lightning strike at the location of a specified player or coordinates. If no arguments are provided, it will strike where the command was invoked.
+        usage: /boom [x y z|player]
+        permission: Jehova.boom
+        permission-message: Invalid command for your permission level.
+    storm:
+        description: Toggle the storm state for the current world (default), or explicitly set it.
+        usage: /storm [on|off]
+        permission: Jehova.storm
+        permission-message: Invalid command for your permission level.
