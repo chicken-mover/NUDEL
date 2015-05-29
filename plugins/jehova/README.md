@@ -13,9 +13,9 @@ Lightning/thunder and storm-related tools.
 * `/storm [on|off]` - Set the storm state on or off, or (if no arguments are
   provided) toggle it.
 
-  ## Other features
+## Other features
 
-  * Localizes all "fake" lightning events to 100 blocks of its origin. This
-    only effects lightning created with `/boom`, or using the lightning effect
-    Spigot API methods, and doesn't effect natural lightning or `/strike` 
-    commands.
+* Localizes all "fake" lightning events to 100 blocks of its origin. This
+  only effects lightning created with `/boom`, or using the lightning effect
+  Spigot API methods, and doesn't effect natural lightning or `/strike` 
+  commands.
