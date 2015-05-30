@@ -1,0 +1,9 @@
+name: Scrapyard
+main: net.d3mok.uruk.scrapyard.Scrapyard
+version: 0.1
+commands:
+    scrap:
+        description: Query or set the destructability of certain vehicles. 
+        usage: /scrap <boats|minecarts> [on|off|status]
+        permission: Scrapyard.scrap
+        permission-message: Invalid command for your permission level.
