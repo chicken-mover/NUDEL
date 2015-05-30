@@ -1,5 +1,8 @@
 package net.d3mok.uruk.jehova;
 
+import net.d3mok.uruk.plugins.NUCommandExecutor;
+import net.d3mok.uruk.utils.NULocations;
+
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -17,41 +20,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-public class JehovaCommandExecutor implements CommandExecutor {
+public class JehovaCommandExecutor extends NUCommandExecutor {
 
     private Jehova plugin;
     private Logger logger;
  
     public JehovaCommandExecutor(Jehova plugin) {
-        this.plugin = plugin;
-        this.logger = plugin.getLogger();
-    }
-    
-    private boolean permissionCheck(CommandSender sender, Command cmd) {
-        String name = cmd.getPermission();
-        if (sender instanceof BlockCommandSender || sender instanceof ConsoleCommandSender) {
-            // Important for scripting
-            return true;
-        } else if (sender instanceof Player) {
-            Player p = (Player) sender;
-            Boolean result = p.hasPermission("Jehova."+name) || p.isOp();
-            if (!result) {
-                sender.sendMessage(ChatColor.RED + cmd.getPermissionMessage());
-            }
-            return result;
-        }
-        return false;
-    }
-    
-    private Location getSenderLoc(CommandSender sender) {
-        if (sender instanceof BlockCommandSender) {
-            Block b = ((BlockCommandSender) sender).getBlock();
-            return (Location) b.getLocation();
-        } else if (sender instanceof Player) {
-            return ((Player) sender).getLocation();
-        } else {
-            throw new CommandException("Something that was not a Player or CommandSender issued a command that requires a location (did you run it from the server console?)");
-        }
+        super(plugin);
     }
     
     private boolean strikeBoom(CommandSender sender, Command cmd, String label, String[] args, Boolean hasEffect) {
@@ -68,12 +43,7 @@ public class JehovaCommandExecutor implements CommandExecutor {
         } else if (args.length == 3) {
             
             Location senderLoc = getSenderLoc(sender);
-            
-            Double x = Double.valueOf(args[0]);
-            Double y = Double.valueOf(args[1]);
-            Double z = Double.valueOf(args[2]);
-            
-            loc = new Location((World) senderLoc.getWorld(), x, y, z);
+            loc = NULocations.getLocation(senderLoc.getWorld(), args[0], args[1], args[2]);
             
         } else if (args.length == 0) {
             loc = getSenderLoc(sender);
@@ -132,15 +102,10 @@ public class JehovaCommandExecutor implements CommandExecutor {
     }
     
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean delegateCommand(CommandSender sender, Command cmd, String label, String[] args) {
         
         String command_name = cmd.getName();
-        Boolean has_perm = permissionCheck(sender, cmd);
-        
-        if (!has_perm) {
-            return false;
-        }
-        
+
         switch(command_name) {
             case "strike":
             case "boom":
