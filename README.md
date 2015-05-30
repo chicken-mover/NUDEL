@@ -42,6 +42,13 @@ server built in the previous section.
 Testing your plugin builds on the live server will get your access permanently
 revoked.
 
+## Dependencies
+
+* Spigot
+* WorldEdit
+* WorldGuard
+* DynMap (not required, but useful)
+
 ## License
 
 This project is public domain under the terms of the 
