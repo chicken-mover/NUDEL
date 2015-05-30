@@ -11,5 +11,9 @@
 .project
 .settings/
 
+# Something is adding .gitignore files to subdirectories
+# and its really annoying
+.gitignore
+
 # Local build stuff
 spigot/

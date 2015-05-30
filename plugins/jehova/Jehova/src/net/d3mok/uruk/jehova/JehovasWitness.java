@@ -1,6 +1,6 @@
 package net.d3mok.uruk.jehova;
 
-import net.d3mok.uruk.entity.NUEntityLightning;
+import net.d3mok.uruk.jehova.JehovaEntityLightning;
 
 import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityWeather;
 
@@ -32,7 +32,7 @@ public class JehovasWitness implements Listener {
         Double y = original_bolt.getLocation().getY();
         Double z = original_bolt.getLocation().getZ();
         
-        NUEntityLightning el = new NUEntityLightning(((CraftWorld)e.getLightning().getLocation().getWorld()).getHandle(), x, y, z);
+        JehovaEntityLightning el = new JehovaEntityLightning(((CraftWorld)e.getLightning().getLocation().getWorld()).getHandle(), x, y, z);
         
         PacketPlayOutSpawnEntityWeather packet = new PacketPlayOutSpawnEntityWeather(el);
         World w = original_bolt.getLocation().getWorld();
