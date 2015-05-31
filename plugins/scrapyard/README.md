@@ -2,8 +2,15 @@
 
 Entity management tools.
 
-## Goals
+## Commands
 
-* Toggleable disabling of descruction of boats/minecarts by arrows (preferrably
-  bound to a WorldGuard region).
-* More things as I think of them.
+* `/scrap status` - Check whether boats and minecarts are killable.
+* `/scrap <boats|minecarts> [on|off]` - Toggle (or specifically set) the
+  killable state of boats and minecarts.
+* `/scrap <boats|minecarts> status`  - Check the status of boats or minecarts.
+
+* `/junk <n> ` - Destroy all boats and minecarts in radius *n*. Optionally,
+  you can specifically specify `boats` or `minecarts` as a third option.
+
+Note that for all commands, `boat` and `boats` are synonyms, as are `cart`,
+`minecart` and `minecarts`.

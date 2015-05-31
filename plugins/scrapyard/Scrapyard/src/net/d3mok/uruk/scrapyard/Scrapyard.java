@@ -19,12 +19,14 @@ public class Scrapyard extends JavaPlugin {
         // Register command handler for creating lightning strikes
         ScrapyardCommandExecutor exec = new ScrapyardCommandExecutor(this);
         getCommand("scrap").setExecutor(exec);
+        getCommand("junk").setExecutor(exec);
         
         // Register event listener for handling thunder noise
         watchdog = new ScrapyardWatchDog(this);
         getServer().getPluginManager().registerEvents(watchdog, this);
         
         getLogger().info("Scrapyard enabled (this is the art police; step away from the skip).");
+        
     }
    
     @Override

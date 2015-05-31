@@ -4,6 +4,11 @@ version: 0.1
 commands:
     scrap:
         description: Query or set the destructability of certain vehicles. 
-        usage: /scrap <boats|minecarts> [on|off|status]
+        usage: /scrap <boat|cart> [on|off|status]
         permission: Scrapyard.scrap
+        permission-message: Invalid command for your permission level.
+    junk:
+        description: Clear all boats and minecarts within a certain radius.
+        usage: /junk <n> [boat|cart]
+        permission: Scrapyard.junk
         permission-message: Invalid command for your permission level.

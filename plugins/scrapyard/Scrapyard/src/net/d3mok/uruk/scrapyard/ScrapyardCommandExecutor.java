@@ -1,14 +1,20 @@
 package net.d3mok.uruk.scrapyard;
 
 import java.util.logging.Logger;
+import java.util.List;
 
 import net.d3mok.uruk.scrapyard.Scrapyard;
 import net.d3mok.uruk.plugins.NUCommandExecutor;
+import net.d3mok.uruk.utils.NULocations;
 
 import org.bukkit.ChatColor;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Boat;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Minecart;
 
 public class ScrapyardCommandExecutor extends NUCommandExecutor {
 
@@ -43,20 +49,29 @@ public class ScrapyardCommandExecutor extends NUCommandExecutor {
         sender.sendMessage(ChatColor.WHITE + "[Scrapyard] " + msg + stat);
     }
     
-    @Override
-    public boolean delegateCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    private String getType(String s) {
+        if (s.matches("^(mine)?carts?")) {
+            return "minecart";
+        } else if (s.matches("^boats?$")) {
+            return "boat";
+        } else {
+            return "";
+        }
+    }
+    
+    private boolean scrap(CommandSender sender, Command cmd, String label, String[] args) {
         
-        Boolean toggle;
-        String type = "minecart";
         
-        if (!(cmd.getName().equals("scrap")) || args.length < 1 || args.length > 2) {
+        if (args.length < 1 || args.length > 2) {
             return false;
         }
         
-        if (args[0].matches("^(mine)?carts?$")) {
-            type = "minecart";
+        Boolean toggle;
+        String type = getType(args[0]);
+        
+        if (type == "minecart") {
             toggle = !this.plugin.killableMinecarts;
-        } else if (args[0].matches("^boats?$")) {
+        } else if (type == "boat") {
             type = "boat";
             toggle = !this.plugin.killableBoats;
         } else if (args[0].equals("status")) {
@@ -94,6 +109,59 @@ public class ScrapyardCommandExecutor extends NUCommandExecutor {
         }
         
         return true;
+    }
+    
+    private boolean junk(CommandSender sender, Command cmd, String label, String[] args) {
+        
+        Double radius;
+        String type = null;
+        
+        if (args.length < 1 || args.length > 2) {
+            return false;
+        } else if (args.length == 2) {
+            type = getType(args[1]);
+        }
+        
+        radius = Double.valueOf(args[0]);
+        
+        Entity e = NULocations.getEntity(sender);
+        
+        if (e == null) {
+            sender.sendMessage(ChatColor.RED + "this command can only be used by players or command blocks.");
+        }
+
+        List<Entity> nearby = e.getNearbyEntities(radius, radius, radius);
+        for (Entity n : nearby) {
+            if (type == null || type.equals("minecart")) {
+                if (n instanceof Minecart) {
+                    n.remove();
+                }
+            }
+            if (type == null || type.equals("boat")) {
+                if (n instanceof Boat) {
+                    n.remove();
+                }
+            }
+        }
+        
+        return true;
+        
+    }
+    
+    @Override
+    public boolean delegateCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        
+        String cmd_name = cmd.getName();
+        
+        switch (cmd_name) {
+             case "scrap":
+                 return scrap(sender, cmd, label, args);
+             case "junk":
+                 return junk(sender, cmd, label, args);
+             default:
+                 return false;
+        }
+        
     }
     
 }
