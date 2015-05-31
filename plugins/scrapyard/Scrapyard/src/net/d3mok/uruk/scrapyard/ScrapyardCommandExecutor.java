@@ -13,9 +13,12 @@ import org.bukkit.command.CommandSender;
 public class ScrapyardCommandExecutor extends NUCommandExecutor {
 
     private Scrapyard plugin;
+    private Logger logger;
  
     public ScrapyardCommandExecutor(Scrapyard plugin) {
         super(plugin);
+        this.plugin = plugin;
+        this.logger = plugin.getLogger();
     }
     
     private void notifyStatus(String status, CommandSender sender) {
@@ -26,7 +29,7 @@ public class ScrapyardCommandExecutor extends NUCommandExecutor {
         if (status.equals("minecart")) {
             msg = "Minecarts are currently ";
             iskillable = this.plugin.killableMinecarts;
-        } else if (status.equals("boats")) {
+        } else if (status.equals("boat")) {
             msg = "Boats are currently ";
             iskillable = this.plugin.killableBoats;
         }
@@ -37,7 +40,7 @@ public class ScrapyardCommandExecutor extends NUCommandExecutor {
             stat = "unkillable";
         }
         
-        sender.sendMessage(ChatColor.RED + msg + stat);
+        sender.sendMessage(ChatColor.WHITE + "[Scrapyard] " + msg + stat);
     }
     
     @Override
@@ -46,11 +49,11 @@ public class ScrapyardCommandExecutor extends NUCommandExecutor {
         Boolean toggle;
         String type = "minecart";
         
-        if (!cmd.getName().equals("scrap") || args.length < 1 || args.length > 2) {
+        if (!(cmd.getName().equals("scrap")) || args.length < 1 || args.length > 2) {
             return false;
         }
         
-        if (args[0].matches("^minecarts?$")) {
+        if (args[0].matches("^(mine)?carts?$")) {
             type = "minecart";
             toggle = !this.plugin.killableMinecarts;
         } else if (args[0].matches("^boats?$")) {
@@ -64,7 +67,7 @@ public class ScrapyardCommandExecutor extends NUCommandExecutor {
             return false;
         }
         
-        if (args.length == 2) {
+        if (args.length == 2) { 
             switch (args[1]) {
                 case "on":
                     toggle = true;
@@ -82,8 +85,10 @@ public class ScrapyardCommandExecutor extends NUCommandExecutor {
         
         if (type.equals("boat")) {
             this.plugin.killableBoats = toggle;
+            notifyStatus("boat", sender);
         } else if (type.equals("minecart")) {
             this.plugin.killableMinecarts = toggle;
+            notifyStatus("minecart", sender);
         } else {
             return false;
         }
