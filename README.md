@@ -45,9 +45,8 @@ revoked.
 ## Dependencies
 
 * Spigot
-* WorldEdit
-* WorldGuard
-* DynMap (not required, but useful)
+* WorldEdit (6.x)
+* WorldGuard (6.x)
 
 ## License
 
