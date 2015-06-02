@@ -2,8 +2,6 @@ package net.d3mok.uruk.plugins;
 
 import net.d3mok.uruk.utils.NULocations;
 
-import java.util.logging.Logger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
@@ -18,11 +16,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class NUCommandExecutor implements CommandExecutor {
 
     private JavaPlugin plugin;
-    private Logger logger;
  
     public NUCommandExecutor(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.logger = plugin.getLogger();
     }
     
     private boolean permissionCheck(CommandSender sender, Command cmd) {
