@@ -1,15 +1,19 @@
 # Huwawa
 
-Strict game-mode restrictions in WorldEdit regions.
+This plugin utilizes the WorldGuard `game-mode` flag to enforce game modes in
+regions. Unlike WorldGuard, Huwawa enforces this on all players, including
+admins and ops, and disables certain op commands while in survival or adventure
+regions.
 
-## Goals
+When switching regions, any instances of the item that is assigned to be the
+WorldEdit wand will also be removed from the player's inventory.
 
-* Easy specification of a region `/region-mode <game-mode> <region-id>`. Checks
-  should be hierarchically aware, though, so that "safe-zone" towns can be set 
-  up (like [Dadŝ City](http://uruk.d3mok.net/wiki/Dad%C5%9D).)
-* Region sets game mode an all entering (or logging in into that region) and 
-  prevents switching game mode (even for Ops and admins)
-* Disable certain commands within a region (`/give`, `/tp`, `/kill`, `/butcher`,
-  `/clear`, `/heal`, all WorldEdit commands, etc.)
-* Announcements to players when entering/leaving a region. Possibly adding 
-  region descriptions, too (`/region-desc <text>`, or as conf files).
+Players (including ops) may not teleport into survival or adventure regions.
+
+## Commands
+
+This plugin has no commands.
+
+## Dependencies
+
+Requires WorldEdit (6.x) and WorldGuard (6.x).
