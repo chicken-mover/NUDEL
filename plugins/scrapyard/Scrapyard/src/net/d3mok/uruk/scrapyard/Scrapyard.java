@@ -2,11 +2,11 @@ package net.d3mok.uruk.scrapyard;
 
 import net.d3mok.uruk.scrapyard.ScrapyardCommandExecutor;
 import net.d3mok.uruk.scrapyard.ScrapyardWatchDog;
+import net.d3mok.uruk.plugins.NUPlugin;
 
 import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class Scrapyard extends JavaPlugin {
+public class Scrapyard extends NUPlugin {
 
     private ScrapyardWatchDog watchdog;
     
@@ -16,12 +16,10 @@ public class Scrapyard extends JavaPlugin {
     @Override
     public void onEnable() {
         
-        // Register command handler for creating lightning strikes
         ScrapyardCommandExecutor exec = new ScrapyardCommandExecutor(this);
         getCommand("scrap").setExecutor(exec);
         getCommand("junk").setExecutor(exec);
         
-        // Register event listener for handling thunder noise
         watchdog = new ScrapyardWatchDog(this);
         getServer().getPluginManager().registerEvents(watchdog, this);
         

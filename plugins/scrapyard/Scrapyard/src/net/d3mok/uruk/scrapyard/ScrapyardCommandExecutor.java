@@ -1,6 +1,5 @@
 package net.d3mok.uruk.scrapyard;
 
-import java.util.logging.Logger;
 import java.util.List;
 
 import net.d3mok.uruk.scrapyard.Scrapyard;
@@ -13,18 +12,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Boat;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Minecart;
 
 public class ScrapyardCommandExecutor extends NUCommandExecutor {
 
     private Scrapyard plugin;
-    private Logger logger;
  
     public ScrapyardCommandExecutor(Scrapyard plugin) {
         super(plugin);
         this.plugin = plugin;
-        this.logger = plugin.getLogger();
     }
     
     private void notifyStatus(String status, CommandSender sender) {
@@ -127,7 +123,7 @@ public class ScrapyardCommandExecutor extends NUCommandExecutor {
         Entity e = NULocations.getEntity(sender);
         
         if (e == null) {
-            sender.sendMessage(ChatColor.RED + "this command can only be used by players or command blocks.");
+            this.plugin.notify(sender, "this command can only be used by players or command blocks.", ChatColor.RED);
         }
 
         List<Entity> nearby = e.getNearbyEntities(radius, radius, radius);

@@ -1,5 +1,6 @@
 package net.d3mok.uruk.jehova;
 
+import net.d3mok.uruk.plugins.NUPlugin;
 import net.d3mok.uruk.plugins.NUCommandExecutor;
 import net.d3mok.uruk.utils.NULocations;
 
@@ -17,10 +18,10 @@ import org.bukkit.entity.Player;
 
 public class JehovaCommandExecutor extends NUCommandExecutor {
 
-    private Jehova plugin;
+    private NUPlugin plugin;
     private Logger logger;
  
-    public JehovaCommandExecutor(Jehova plugin) {
+    public JehovaCommandExecutor(NUPlugin plugin) {
         super(plugin);
     }
     

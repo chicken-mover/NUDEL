@@ -3,12 +3,12 @@ package net.d3mok.uruk.jehova;
 import net.d3mok.uruk.jehova.JehovaCommandExecutor;
 import net.d3mok.uruk.jehova.JehovasWitness;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import net.d3mok.uruk.plugins.NUPlugin;
 
 import org.bukkit.event.HandlerList;
 
 
-public class Jehova extends JavaPlugin {
+public class Jehova extends NUPlugin {
     
     private JehovasWitness witness;
 
