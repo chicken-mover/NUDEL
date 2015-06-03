@@ -1,5 +1,6 @@
 package net.d3mok.uruk.plugins;
 
+import net.d3mok.uruk.plugins.NUPlugin;
 import net.d3mok.uruk.utils.NULocations;
 
 import org.bukkit.ChatColor;
@@ -15,9 +16,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class NUCommandExecutor implements CommandExecutor {
 
-    private JavaPlugin plugin;
+    private NUPlugin plugin;
  
-    public NUCommandExecutor(JavaPlugin plugin) {
+    public NUCommandExecutor(NUPlugin plugin) {
         this.plugin = plugin;
     }
     
@@ -30,7 +31,7 @@ public class NUCommandExecutor implements CommandExecutor {
             Player p = (Player) sender;
             Boolean result = p.hasPermission(perm_name) || p.isOp();
             if (!result) {
-                sender.sendMessage(ChatColor.RED + this.plugin.getName() + ": " + cmd.getPermissionMessage());
+                this.plugin.notify(sender, cmd.getPermissionMessage(), ChatColor.RED);
             }
             return result;
         }
