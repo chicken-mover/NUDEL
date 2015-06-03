@@ -1,15 +1,10 @@
 package net.d3mok.uruk.huwawa;
 
 import net.d3mok.uruk.huwawa.Huwawa;
-
-import java.lang.RuntimeException;
+import net.d3mok.uruk.utils.NULocations;
 
 import org.bukkit.GameMode;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,66 +15,23 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
-import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.LocalConfiguration;
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import com.sk89q.worldguard.bukkit.BukkitUtil;
-import com.sk89q.worldguard.bukkit.RegionContainer;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-
-//import static com.sk89q.worldedit.bukkit.BukkitUtil.*;
 
 
 public class HuwawaListener implements Listener {
     
     private Huwawa plugin;
-    private PluginManager manager;
     
     public HuwawaListener(Huwawa plugin) {
         super();
         this.plugin = plugin;
-        this.manager = this.plugin.getServer().getPluginManager();
-    }
-    
-    private WorldGuardPlugin getWorldGuard() {
-        Plugin w = manager.getPlugin("WorldGuard");
-        if (w == null) {
-            throw new RuntimeException("[Huwawa] Can't load WorldGuard!");
-        }
-        return (WorldGuardPlugin) w;
-    }
-    
-    private WorldEditPlugin getWorldEdit() {
-        Plugin w = manager.getPlugin("WorldEdit");
-        if (w == null) {
-            throw new RuntimeException("[Huwawa] Can't load WorldEdit!");
-        }
-        return (WorldEditPlugin) w;
-    }
-
-    private ApplicableRegionSet locationInRegions(Location loc) {
-        World world = loc.getWorld();
-        RegionContainer container = getWorldGuard().getRegionContainer();
-
-        Vector pt = BukkitUtil.toVector(loc);
-        RegionManager manager = container.get(world);
-        ApplicableRegionSet regions = manager.getApplicableRegions(pt);
-
-        return regions;
-    }
-
-    private ApplicableRegionSet playerInRegions(Player player) {
-        Location loc = player.getLocation();
-        return locationInRegions(loc);
     }
 
     private boolean locationInFlaggedRegions(Location loc) {
-        ApplicableRegionSet set = locationInRegions(loc);
+        ApplicableRegionSet set = NULocations.locationInRegions(loc, this.plugin.getWorldGuard());
         if (set == null) {
             return false;
         }
@@ -109,31 +61,25 @@ public class HuwawaListener implements Listener {
         return parts[0];
     }
 
-    private void notify(Player player, String cmd) {
-        String msg = "[Huwawa] The command '"+cmd+"' has been blocked, because you are in a survival or adventure zone.";
-        player.sendMessage(ChatColor.RED+msg);
-    }
-
     private void removeWandFromInventory(Player player) {
-        LocalConfiguration conf = getWorldEdit().getLocalConfiguration();
+        LocalConfiguration conf = this.plugin.getWorldEdit().getLocalConfiguration();
         // 6.x SHOULD provide a non-int way of doing this, but I can't find docs
         // on it. This is deprecated, anyway.
         int id = conf.wandItem;
         ItemStack wandItem = new ItemStack(id);
-
         PlayerInventory inv = player.getInventory();
         inv.remove(wandItem);
     }
 
     @EventHandler (priority = EventPriority.HIGH)
     public void onMove(PlayerMoveEvent e) {
-        ApplicableRegionSet set = playerInRegions(e.getPlayer());
+        ApplicableRegionSet set = NULocations.playerInRegions(e.getPlayer(), this.plugin.getWorldGuard());
         Player player = e.getPlayer();
         // Enforce Game Mode restrictions, over and above WorldEdit's handling.
         GameMode mode = set.queryValue(null, DefaultFlag.GAME_MODE);
-        if (mode != null) {
+        if (mode != null && !(player.getGameMode().equals(mode))) {
             player.setGameMode(mode);
-            player.sendMessage(ChatColor.WHITE+"[Huwawa] Game mode set: "+String.valueOf(mode)+" (now: "+String.valueOf(player.getGameMode())+")");
+            this.plugin.notify(player, "You are now in a "+String.valueOf(mode)+" region. Your game mode has been set to match.");
             removeWandFromInventory(player);
         }
     }
@@ -166,24 +112,37 @@ public class HuwawaListener implements Listener {
                 case "region":
                 case "rg":
                     e.setCancelled(true);
-                    notify(player, command);
+                    this.plugin.notify(player, "The command '"+command+"' has been blocked, because you are in a survival or adventure zone.");
             }
         }
     }
 
     @EventHandler (priority = EventPriority.HIGH)
     public void onPlayerTeleport(PlayerTeleportEvent e) {
+        Location from = e.getFrom();
         Location dest = e.getTo();
+        Player player = e.getPlayer();
+        if (NULocations.closeEnough(from, dest)) {
+            // Could be a login event, or some other trivial teleport. Doesn't
+            // matter enough for us to catch it.
+            return;
+        }
+        // For some reason this isn't always set correctly in Spigot, so is
+        // actually quite unreliable.
         PlayerTeleportEvent.TeleportCause cause = e.getCause();
-        this.plugin.getLogger().info("Teleport detected: "+String.valueOf(cause)+" "+String.valueOf(e.getFrom())+" -> "+String.valueOf(e.getTo()));
+
         if (cause != null && (
             cause.equals(PlayerTeleportEvent.TeleportCause.COMMAND) || 
-            cause.equals(PlayerTeleportEvent.TeleportCause.PLUGIN)  
+            cause.equals(PlayerTeleportEvent.TeleportCause.PLUGIN)  ||
+            // Ideally we wouldn't check UNKNOWNS, but Spigot seems to set some
+            // events as unknown that are clearly commands.
+            cause.equals(PlayerTeleportEvent.TeleportCause.UNKNOWN)
            )) {
             if (locationInFlaggedRegions(dest)) {
-                this.plugin.getLogger().info("Teleport into exclusion zone detected: "+String.valueOf(cause));
+                this.plugin.notify(player, "The target teleport location is in a survival or adventure zone, so you can't teleport there.");
                 e.setCancelled(true);
             }
         }
+
     }    
 }
